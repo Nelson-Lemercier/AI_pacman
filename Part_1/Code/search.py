@@ -91,8 +91,77 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    n = Directions.NORTH
+    e = Directions.EAST
+
+    from util import Queue
+    from util import Stack
+    queue = Queue()
+    path = []
+    allreadyVisit = []
+    ancestor = {}
+    startnode = (problem.getStartState(), 'null', 0)
+    queue.push(startnode)
+
+    nodegoal = startnode
+    goal = False
+
+    while not queue.isEmpty():
+
+        node = queue.pop()
+        visit = False
+
+        if node[0] not in allreadyVisit :
+            allreadyVisit.append(node[0])
+            if problem.isGoalState(node[0]) == True:
+                nodegoal = node
+                break
+
+            for successors in problem.getSuccessors(node[0]):
+                ancestor[successors] = node
+                queue.push(successors)
+
+    path.append(nodegoal[1])
+    while nodegoal[0] != problem.getStartState():
+        for k in range(len(ancestor)):
+            if nodegoal == list(ancestor.items())[k][0]:
+                nodetransit = list(ancestor.items())[k][1]
+                nodegoal = nodetransit
+                if nodegoal[0] == problem.getStartState():
+                    break
+                else:
+                    path.append(nodetransit[1])
+
+
+    """Formatting output data"""
+
+    output = list()
+    path.reverse()
+    for i in path:
+        output.append(i)
+
+
+    for i in range(len(output)):
+
+        if output[i] is 'North':
+
+            output[i] = n
+
+        elif output[i] is 'East':
+
+            output[i] = e
+
+        elif output[i] is 'South':
+
+            output[i] = s
+        elif output[i] is 'West':
+
+            output[i] = w
+    return output
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
