@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -70,7 +71,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -85,9 +87,78 @@ def depthFirstSearch(problem):
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
+
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    """Initialization"""
+
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    n = Directions.NORTH
+    e = Directions.EAST
+
+    stack = util.Stack()
+    visited = list()
+    path = []
+
+    for successor in problem.getSuccessors(problem.getStartState()):
+        stack.push((successor, [
+            successor[1]]))  # We push the successor and the path (all the directions) from the root to this successor
+
+    """DFS algorithm"""
+
+    while not stack.isEmpty():
+
+        PoppedElement = stack.pop()
+
+        state = PoppedElement[0][0]
+        path = PoppedElement[1]
+
+        if problem.isGoalState(state):
+            break
+
+        for successor in problem.getSuccessors(state):
+
+            successorState = successor[0]
+            successorPath = successor[1]
+
+            if successorState not in visited:
+                visited.append(successor[0])
+
+                new_path = path + [successorPath]
+
+                stack.push((successor, new_path))
+
+    """Formatting output data"""
+
+    output = list()
+
+    for i in path:
+        output.append(i)
+
+    print "Output :", output
+
+    for i in range(len(output)):
+
+        if output[i] is 'North':
+
+            output[i] = n
+
+        elif output[i] is 'East':
+
+            output[i] = e
+
+        elif output[i] is 'South':
+
+            output[i] = s
+
+        else:
+
+            output[i] = w
+
+    return output
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -163,10 +234,12 @@ def breadthFirstSearch(problem):
     return output
 
 
+
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -174,6 +247,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
