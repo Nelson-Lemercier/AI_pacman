@@ -18,7 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
-
+import searchAgents
 
 class SearchProblem:
     """
@@ -87,89 +87,45 @@ def depthFirstSearch(problem):
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
-
     """
 
-    """Initialization"""
-
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    n = Directions.NORTH
-    e = Directions.EAST
-
     stack = util.Stack()
-    visited = list()
-    path = []
-
-    for successor in problem.getSuccessors(problem.getStartState()):
-        stack.push((successor, [
-            successor[1]]))  # We push the successor and the path (all the directions) from the root to this successor
+    visited = set()
 
     """DFS algorithm"""
 
+    stack.push((problem.getStartState(), []))
+
+    # The stack is composed of the state and the path from the start to this state
+
+    visited = []
+
     while not stack.isEmpty():
 
-        PoppedElement = stack.pop()
+        popItem = stack.pop()
 
-        state = PoppedElement[0][0]
-        path = PoppedElement[1]
+        state = popItem[0]
+        path = popItem[1]
 
         if problem.isGoalState(state):
-            break
 
-        for successor in problem.getSuccessors(state):
+            return path
 
-            successorState = successor[0]
-            successorPath = successor[1]
+        if state not in visited:
 
-            if successorState not in visited:
-                visited.append(successor[0])
+            visited.append(state)
 
-                new_path = path + [successorPath]
+            for successorState, successorDir, successorCost in problem.getSuccessors(state):
 
-                stack.push((successor, new_path))
+                new_path = path + [successorDir]
 
-    """Formatting output data"""
-
-    output = list()
-
-    for i in path:
-        output.append(i)
-
-    print "Output :", output
-
-    for i in range(len(output)):
-
-        if output[i] is 'North':
-
-            output[i] = n
-
-        elif output[i] is 'East':
-
-            output[i] = e
-
-        elif output[i] is 'South':
-
-            output[i] = s
-
-        else:
-
-            output[i] = w
-
-    return output
+                stack.push((successorState, new_path))
 
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    n = Directions.NORTH
-    e = Directions.EAST
 
     from util import Queue
-    from util import Stack
     queue = Queue()
     path = []
     allreadyVisit = []
@@ -206,32 +162,8 @@ def breadthFirstSearch(problem):
                 else:
                     path.append(nodetransit[1])
 
-
-    """Formatting output data"""
-
-    output = list()
     path.reverse()
-    for i in path:
-        output.append(i)
-
-
-    for i in range(len(output)):
-
-        if output[i] is 'North':
-
-            output[i] = n
-
-        elif output[i] is 'East':
-
-            output[i] = e
-
-        elif output[i] is 'South':
-
-            output[i] = s
-        elif output[i] is 'West':
-
-            output[i] = w
-    return output
+    return path
 
 
 
@@ -307,6 +239,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             output[i] = w
     print output
     return output
+
 
 
 
