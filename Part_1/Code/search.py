@@ -170,7 +170,64 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    Pqueue=util.PriorityQueue()
+
+    root=problem.getStartState()
+    Pqueue.push(root,0)
+    parent={}
+    dictcost={}
+    visited=[]
+
+    #Root
+    parent[root]=None
+    dictcost[root]=0
+    Node=Pqueue.pop()
+    visited.append(Node)
+    successors = problem.getSuccessors(Node)
+    ancestor=Node
+    ancestor_cost = 0
+    for i in successors:
+        cost = i[2] + ancestor_cost
+        dictcost[i] = cost  # the saving cost is the cost of parents and his cost
+        parent[i] = ancestor
+        Pqueue.push(i, cost)
+
+    while Pqueue.isEmpty() is not True :
+        Node=Pqueue.pop()
+        if Node[0] not in visited :
+            visited.append(Node[0])
+            if problem.isGoalState(Node[0]) is True :
+                ll=[]
+                goal=Node
+                break
+
+            else :
+                successors=problem.getSuccessors(Node[0])
+                if Node in dictcost :
+                    ancestor_cost=dictcost[Node]
+                for i in successors:
+                    cost=i[2]+ancestor_cost
+                    dictcost[i]=cost #the saving cost is the cost of parents and his cost
+
+                    parent[i] = Node
+                    Pqueue.push(i,cost)
+
+    Node=goal
+    ll.append(Node[1])
+
+    while Node[0] != problem.getStartState():
+        dir=parent[Node][1]
+        ll.append(dir)
+        Node = parent[Node]
+        if Node == problem.getStartState() :
+            break
+
+    ll=ll[0:len(ll)-1]
+    ll.reverse()
+    return ll
+    #util.raiseNotDefined()
+
 
 
 def nullHeuristic(state, problem=None):
@@ -201,7 +258,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     node = startnode
     print problem.getStartState()
     while not problem.isGoalState(node[0]):
-        node = Pqueue.pop()+
+        node = Pqueue.pop()
         if node[0] not in allreadyVisit :
             allreadyVisit.append(node[0])
             if problem.isGoalState(node[0]) == True:
