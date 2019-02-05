@@ -183,7 +183,7 @@ def breadthFirstSearch(problem):
     while not queue.isEmpty():
 
         node = queue.pop()
-        visit = False
+
 
         if node[0] not in allreadyVisit :
             allreadyVisit.append(node[0])
@@ -252,7 +252,63 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    n = Directions.NORTH
+    e = Directions.EAST
+    from util import PriorityQueue
+    Pqueue = PriorityQueue()
+    path = []
+    allreadyVisit = []
+    difchem = []
+    Pathtogo = PriorityQueue()
+    startnode = (problem.getStartState(), 'null', 0)
+    Pqueue.push(startnode, 0)
+    node = startnode
+    print problem.getStartState()
+    while not problem.isGoalState(node[0]):
+        node = Pqueue.pop()+
+        if node[0] not in allreadyVisit :
+            allreadyVisit.append(node[0])
+            if problem.isGoalState(node[0]) == True:
+                break
+            for successors in problem.getSuccessors(node[0]):
+
+                    coord = successors[0]
+                    dir = successors[1]
+                    if successors[0] not in allreadyVisit:
+
+                        difchem = path + [dir]
+                        cost = problem.getCostOfActions(difchem) + heuristic(coord, problem)
+                        Pathtogo.push(difchem, cost)
+                        Pqueue.push(successors, cost)
+
+        path = Pathtogo.pop()
+    output = list()
+    for i in path:
+        output.append(i)
+    for i in range(len(output)):
+
+        if output[i] is 'North':
+
+            output[i] = n
+
+        elif output[i] is 'East':
+
+            output[i] = e
+
+        elif output[i] is 'South':
+
+            output[i] = s
+        elif output[i] is 'West':
+
+            output[i] = w
+    print output
+    return output
+
+
 
 
 # Abbreviations
