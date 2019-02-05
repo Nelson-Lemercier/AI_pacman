@@ -18,7 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
-
+import searchAgents
 
 class SearchProblem:
     """
@@ -87,7 +87,6 @@ def depthFirstSearch(problem):
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
-
     """
 
     stack = util.Stack()
@@ -95,31 +94,32 @@ def depthFirstSearch(problem):
 
     """DFS algorithm"""
 
-    startNode = (problem.getStartState(), [])
-    stack.push(startNode)  # We push the successor and the path (all the directions) from the root to this successor
+    stack.push((problem.getStartState(), []))
+
+    # The stack is composed of the state and the path from the start to this state
+
+    visited = []
 
     while not stack.isEmpty():
 
-        PoppedElement = stack.pop()
+        popItem = stack.pop()
 
-        state = PoppedElement[0]
-        path = PoppedElement[1]
+        state = popItem[0]
+        path = popItem[1]
 
         if problem.isGoalState(state):
-            break
 
-        successors = problem.getSuccessors(state)
+            return path
 
-        for successorState, successorPath, successorCost in successors:
+        if state not in visited:
 
-            if successorState not in visited:
-                visited.add(successorState)
+            visited.append(state)
 
-                new_path = path + [successorPath]
+            for successorState, successorDir, successorCost in problem.getSuccessors(state):
+
+                new_path = path + [successorDir]
 
                 stack.push((successorState, new_path))
-
-    return path
 
 
 def breadthFirstSearch(problem):
@@ -185,6 +185,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
 
 
 # Abbreviations
