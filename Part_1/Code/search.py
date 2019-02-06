@@ -212,7 +212,6 @@ def uniformCostSearch(problem):
     print output
     return output
 
-
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
