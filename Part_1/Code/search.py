@@ -217,7 +217,11 @@ def uniformCostSearch(problem):
     ll.append(Node[1])
 
     while Node[0] != problem.getStartState():
-        dir=parent[Node][1]
+        #print(parent[Node])
+        dir=[]
+        if (len(parent[Node])) ==3 :
+            dir = parent[Node][1]
+            #print(dir)
         ll.append(dir)
         Node = parent[Node]
         if Node == problem.getStartState() :
