@@ -143,15 +143,12 @@ def breadthFirstSearch(problem):
         if node[0] not in allreadyVisit:
             allreadyVisit.append(node[0])
             if problem.isGoalState(node[0]) == True:
-                print 'goal'
                 for i in path:
                     output.append(i[1])
                 break
             for successors in problem.getSuccessors(node[0]):
                 difchem = path + [successors]
                 queue.push(difchem)
-    print output
-    print 'goal find'
 
     return output
 
@@ -172,7 +169,7 @@ def uniformCostSearch(problem):
     startnode = (problem.getStartState(), 'null', 0)
     Pqueue.push(startnode, 0)
     node = startnode
-    print problem.getStartState()
+
     while not problem.isGoalState(node[0]):
         node = Pqueue.pop()
         if node[0] not in allreadyVisit:
@@ -209,7 +206,7 @@ def uniformCostSearch(problem):
         elif output[i] is 'West':
 
             output[i] = w
-    print output
+
     return output
 
 def nullHeuristic(state, problem=None):
@@ -238,7 +235,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     startnode = (problem.getStartState(), 'null', 0)
     Pqueue.push(startnode, 0)
     node = startnode
-    print problem.getStartState()
+
     while not problem.isGoalState(node[0]):
         node = Pqueue.pop()
         if node[0] not in allreadyVisit :
@@ -276,7 +273,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         elif output[i] is 'West':
 
             output[i] = w
-    print output
+
     return output
 
 
