@@ -129,110 +129,85 @@ def breadthFirstSearch(problem):
     queue = Queue()
     path = []
     allreadyVisit = []
-    ancestor = {}
-    startnode = (problem.getStartState(), 'null', 0)
-    queue.push(startnode)
-
-    nodegoal = startnode
-    goal = False
+    output = []
+    startnode = problem.getStartState()
+    allreadyVisit.append(startnode)
+    for i in problem.getSuccessors(startnode):
+        queue.push([i])
 
     while not queue.isEmpty():
 
-        node = queue.pop()
+        path = queue.pop()
+        node = path[-1]
 
-
-        if node[0] not in allreadyVisit :
+        if node[0] not in allreadyVisit:
             allreadyVisit.append(node[0])
             if problem.isGoalState(node[0]) == True:
-                nodegoal = node
+                for i in path:
+                    output.append(i[1])
                 break
-
             for successors in problem.getSuccessors(node[0]):
-                ancestor[successors] = node
-                queue.push(successors)
+                difchem = path + [successors]
+                queue.push(difchem)
 
-    path.append(nodegoal[1])
-    while nodegoal[0] != problem.getStartState():
-        for k in range(len(ancestor)):
-            if nodegoal == list(ancestor.items())[k][0]:
-                nodetransit = list(ancestor.items())[k][1]
-                nodegoal = nodetransit
-                if nodegoal[0] == problem.getStartState():
-                    break
-                else:
-                    path.append(nodetransit[1])
-
-    path.reverse()
-    return path
-
+    return output
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    n = Directions.NORTH
+    e = Directions.EAST
+    from util import PriorityQueue
+    Pqueue = PriorityQueue()
+    path = []
+    allreadyVisit = []
+    difchem = []
+    togo = PriorityQueue()
+    startnode = (problem.getStartState(), 'null', 0)
+    Pqueue.push(startnode, 0)
+    node = startnode
 
-    Pqueue=util.PriorityQueue()
-
-    root=problem.getStartState()
-    Pqueue.push(root,0)
-    parent={}
-    dictcost={}
-    visited=[]
-
-    #Root
-    parent[root]=None
-    dictcost[root]=0
-    Node=Pqueue.pop()
-    visited.append(Node)
-    successors = problem.getSuccessors(Node)
-    ancestor=Node
-    ancestor_cost = 0
-    for i in successors:
-        cost = i[2] + ancestor_cost
-        dictcost[i] = cost  # the saving cost is the cost of parents and his cost
-        parent[i] = ancestor
-        Pqueue.push(i, cost)
-
-    while Pqueue.isEmpty() is not True :
-        Node=Pqueue.pop()
-        if Node[0] not in visited :
-            visited.append(Node[0])
-            if problem.isGoalState(Node[0]) is True :
-                ll=[]
-                goal=Node
+    while not problem.isGoalState(node[0]):
+        node = Pqueue.pop()
+        if node[0] not in allreadyVisit:
+            allreadyVisit.append(node[0])
+            if problem.isGoalState(node[0]) == True:
                 break
+            for successors in problem.getSuccessors(node[0]):
 
-            else :
-                successors=problem.getSuccessors(Node[0])
-                if Node in dictcost :
-                    ancestor_cost=dictcost[Node]
-                for i in successors:
-                    cost=i[2]+ancestor_cost
-                    dictcost[i]=cost #the saving cost is the cost of parents and his cost
+                coord = successors[0]
+                dir = successors[1]
+                if successors[0] not in allreadyVisit:
+                    difchem = path + [dir]
+                    cost = problem.getCostOfActions(difchem)
+                    togo.push(difchem, cost)
+                    Pqueue.push(successors, cost)
 
-                    parent[i] = Node
-                    Pqueue.push(i,cost)
+        path = togo.pop()
+    output = list()
+    for i in path:
+        output.append(i)
+    for i in range(len(output)):
 
-    Node=goal
-    ll.append(Node[1])
+        if output[i] is 'North':
 
-    while Node[0] != problem.getStartState():
-        #print(parent[Node])
-        dir=[]
-        if (len(parent[Node])) ==3 :
-            dir = parent[Node][1]
-            #print(dir)
-        ll.append(dir)
-        Node = parent[Node]
-        if Node == problem.getStartState() :
-            break
+            output[i] = n
 
-    ll=ll[0:len(ll)-1]
-    ll.reverse()
-    return ll
-    #util.raiseNotDefined()
+        elif output[i] is 'East':
 
+            output[i] = e
 
+        elif output[i] is 'South':
+
+            output[i] = s
+        elif output[i] is 'West':
+
+            output[i] = w
+
+    return output
 
 def nullHeuristic(state, problem=None):
     """
@@ -256,11 +231,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     path = []
     allreadyVisit = []
     difchem = []
-    Pathtogo = PriorityQueue()
+    togo = PriorityQueue()
     startnode = (problem.getStartState(), 'null', 0)
     Pqueue.push(startnode, 0)
     node = startnode
-    print problem.getStartState()
+
     while not problem.isGoalState(node[0]):
         node = Pqueue.pop()
         if node[0] not in allreadyVisit :
@@ -275,10 +250,10 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
                         difchem = path + [dir]
                         cost = problem.getCostOfActions(difchem) + heuristic(coord, problem)
-                        Pathtogo.push(difchem, cost)
+                        togo.push(difchem, cost)
                         Pqueue.push(successors, cost)
 
-        path = Pathtogo.pop()
+        path = togo.pop()
     output = list()
     for i in path:
         output.append(i)
@@ -298,7 +273,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         elif output[i] is 'West':
 
             output[i] = w
-    print output
+
     return output
 
 
