@@ -97,13 +97,12 @@ class ReflexAgent(Agent):
 
         Capsules=successorGameState.getCapsules()
 
-        distanceghost=manhattanDistance(newPos, (newGhostStates[0].getPosition()))
-        if distanceghost>0 :
-            score =score - weight_ghost/distanceghost
-
-
-        if (newGhostStates[0].scaredTimer !=0 ) :
-            score=score+weight_scared/distanceghost
+        for ghost in newGhostStates :
+            distanceghost=manhattanDistance(newPos, ghost.getPosition())
+            if distanceghost>0 :
+                score =score - weight_ghost/distanceghost
+            if (ghost.scaredTimer !=0 ) :
+                score=score+weight_scared/distanceghost
 
         #for cap in Capsules :
             #distanceCapsules=manhattanDistance(newPos, cap)
