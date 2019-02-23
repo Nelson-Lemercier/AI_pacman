@@ -15,7 +15,7 @@
 from util import manhattanDistance
 from game import Directions
 import random, util
-
+import math
 from game import Agent
 
 class ReflexAgent(Agent):
@@ -162,7 +162,47 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
+        #get legal action
+        Nagent=gameState.getNumAgents()
+        for agent in range(0,Nagent) :
+            legalaction=gameState.getLegalActions(agent)
+            for action in legalaction :
+                if agent == 0 :
+                    value= self.min_value(gameState,action,agent,self.depth)
+                elif agent >0 :
+                    value=self.max_value(gameState,action,agent,self.depth)
+
+
         util.raiseNotDefined()
+
+    def min_value(self,gameState,action,indexagent,depth):
+        v=math.inf
+        successors = gameState.generateSuccessor(indexagent, action)
+
+        if (depth == self.depth or len(gameState.getLegalActions(indexagent))== 0):
+            return self.evaluationFunction(gameState)
+
+        legalaction = successors.getLegalActions(indexagent)
+        for action in legalaction:
+            v = min(v, self.max_value(successors,action, indexagent, depth + 1))
+        return v
+
+
+
+
+    def max_value(self,gameState,action,indexagent, depth):
+        v=-(math.inf)
+
+        if (depth==self.depth or len(gameState.getLegalActions(indexagent))==0) :
+           return self.evaluationFunction(gameState)
+
+        successor = gameState.generateSuccessor(indexagent, action)
+        legalaction = gameState.getLegalActions(indexagent)
+        for action in legalaction:
+            v=min(v,self.min_value(successor,action,indexagent,depth+1))
+        return v
+
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
